@@ -118,34 +118,51 @@ async function playRaceEngine(character1, character2) {
         character2.PODER
       );
 
-      if (powerResult1 > powerResult2 && character2.PONTOS > 0) {
-        console.log(
-          `${character1.NOME} venceu o confronto! ${character2.NOME} perdeu 1 ponto 🐢`
-        );
-        character2.PONTOS--;
-      }
+      if (powerResult1 > powerResult2) {
+        // Sorteia penalidade para o perdedor
+        const penalty = Math.random() < 0.5 ? 1 : 2;
+        if (character2.PONTOS > 0) {
+          character2.PONTOS -= penalty;
+          if (character2.PONTOS < 0) character2.PONTOS = 0;
 
-      if (powerResult2 > powerResult1 && character1.PONTOS > 0) {
-        console.log(
-          `${character2.NOME} venceu o confronto! ${character1.NOME} perdeu 1 ponto 🐢`
-        );
-        character1.PONTOS--;
-      }
+          console.log(
+            `${character1.NOME} venceu o confronto! ${character2.NOME} levou um ${penalty === 1 ? "casco 🐢" : "bomba 💣"} e perdeu ${penalty} ponto(s)!`
+          );
+        }
 
-      console.log(
-        powerResult2 === powerResult1
-          ? "Confronto empatado! Nenhum ponto foi perdido"
-          : ""
-      );
+        if (Math.random() < 0.5) {
+          character1.PONTOS++;
+          console.log(`${character1.NOME} ganhou um turbo! (+1 ponto) 🚀`);
+        }
+      } else if (powerResult2 > powerResult1) {
+        const penalty = Math.random() < 0.5 ? 1 : 2;
+        if (character1.PONTOS > 0) {
+          character1.PONTOS -= penalty;
+          if (character1.PONTOS < 0) character1.PONTOS = 0;
+
+          console.log(
+            `${character2.NOME} venceu o confronto! ${character1.NOME} levou um ${penalty === 1 ? "casco 🐢" : "bomba 💣"} e perdeu ${penalty} ponto(s)!`
+          );
+        }
+
+        if (Math.random() < 0.5) {
+          character2.PONTOS++;
+          console.log(`${character2.NOME} ganhou um turbo! (+1 ponto) 🚀`);
+        }
+      } else {
+        console.log("Confronto empatado! Nenhum ponto foi perdido");
+      }
     }
 
-    // verificando o vencedor
-    if (totalTestSkill1 > totalTestSkill2) {
-      console.log(`${character1.NOME} marcou um ponto!`);
-      character1.PONTOS++;
-    } else if (totalTestSkill2 > totalTestSkill1) {
-      console.log(`${character2.NOME} marcou um ponto!`);
-      character2.PONTOS++;
+    // verificação de vencedor da rodada (somente para RETA e CURVA)
+    if (block !== "CONFRONTO") {
+      if (totalTestSkill1 > totalTestSkill2) {
+        console.log(`${character1.NOME} marcou um ponto!`);
+        character1.PONTOS++;
+      } else if (totalTestSkill2 > totalTestSkill1) {
+        console.log(`${character2.NOME} marcou um ponto!`);
+        character2.PONTOS++;
+      }
     }
 
     console.log("-----------------------------");
